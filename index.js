@@ -50,10 +50,10 @@ client.on('message' ,msg =>{
 						console.error(err);						
 					});
 			} else {
-				message.reply("The user is not in this server");
+				msg.reply("The user is not in this server");
 			}}
 			else{
-				message.reply("`No user mentioned`");
+				msg.reply("`No user mentioned`");
 			}
 		}
 });
