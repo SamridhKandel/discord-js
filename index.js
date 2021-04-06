@@ -11,6 +11,13 @@ client.on('message', msg => {
   }
 });
 
+
+client.on('message', msg => {
+	console.log(msg.author.tag,'\n',msg.content)
+}
+);
+
+
 client.on('message', msg => {
 	if (msg.content.startsWith('!avatar')) {
 		const user = msg.mentions.users.first();
@@ -46,10 +53,10 @@ client.on('message' ,msg =>{
 				member
 					.kick('Optional text to show up at audit log')
 					.then(() => {
-						msg.channel.send('$`{user.tag}` was kicked successfully');						
+						msg.channel.send(`${user.tag} was kicked successfully`);						
 					})
 					.catch(err => {
-						msg.reply('Unable to kick '+ user.tag);
+						msg.channel.send(`Unable to kick ${user.tag}`);
 						console.error(err);						
 					});
 			} else {
@@ -57,7 +64,7 @@ client.on('message' ,msg =>{
 			}}
 			else{
 						msg.reply("`No user mentioned`");
-				}
+					}
 		}
 		
 }});
