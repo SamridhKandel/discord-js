@@ -1,13 +1,9 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require('node-fetch');
-var YoutubeMp3Downloader = require("youtube-mp3-downloader");
-var yd = new YoutubeMp3Downloader({
-  "ffmpegPath" : "/usr/bin/ffmpeg",
-  "outputPath" : "/home/notfamous/Music/bot"
-});
 var opts = {maxResults : 2, key : 'AIzaSyBv3bSM1x9GMCl_HkB_hd2VrJeSWU02FfQ'};
 const search = require('youtube-search');
+const ytdl = require('ytdl-core');
 require('ffmpeg-static');
 require('@discordjs/opus');
 require('dotenv').config();
@@ -35,11 +31,11 @@ gifs = {
   ]
 }
 
-       client.on('message', msg => {
-         if (msg.content === '*ping') {
-           msg.reply('`pong`');
-         }
-       });
+client.on('message', msg => {
+  if (msg.content === '*ping') {
+    msg.reply('`pong`');
+  }
+});
 
 client.on('message',
           msg => {console.log(
@@ -88,33 +84,6 @@ client.on('message', msg => {
 
     else {
       msg.reply("`Select someone to greet you stupid bitch`");
-    }
-  }
-});
-
-client.on('message', msg => {
-  if (msg.content.startsWith('kick')) {
-    const user = msg.mentions.users.first();
-    if (user === msg.author) {
-      msg.channel.send('`You cannot kick yourself retard`');
-    } else {
-      if (user) {
-        const member = msg.guild.member(user);
-        if (member) {
-          member.kick('Optional text to show up at audit log')
-              .then(() => {
-                msg.channel.send(`${user.tag} was kicked successfully`);
-              })
-              .catch(err => {
-                msg.channel.send(`Unable to kick ${user.tag}`);
-                console.error(err);
-              });
-        } else {
-          msg.reply("The user is not in this server");
-        }
-      } else {
-        msg.reply("`No user mentioned`");
-      }
     }
   }
 });
@@ -197,8 +166,8 @@ client.on('message', msg => {
   }
 });
 
-client.on('message', msg => {
-  if (msg.content.startsWith('*p')) {
+/*client.on('message', msg => {
+  if (msg.content === '*p') {
     msgcontent = msg.content.trim().split(" ");
     let i = 0;
     const user = msg.mentions.users.first()
@@ -209,7 +178,7 @@ client.on('message', msg => {
     }
   }
 });
-
+*/
 client.on('message', msg => {
   if (msg.content.startsWith("*pat")) {
     let randomNum = Math.floor(Math.random() * 4);
@@ -234,13 +203,9 @@ client.on('message', msg => {
 });
 
 client.on('message', msg => {
-  if (msg.content === '*play') {
+  if (msg.content === '*aaija muji') {
     var voiceChannel = msg.member.voice.channel;
-    voiceChannel.join().then(connection => {
-      const dispatcher =
-          connection.play('/home/notfamous/Music/Leat’eq - Tokyo.mp3');
-      dispatcher.on("end", end => { voiceChannel.leave(); });
-    });
+    voiceChannel.join();
   }
 });
 
@@ -250,23 +215,27 @@ client.on('message', msg => {
     var voiceChannel = msg.member.voice.channel;
     // getting the song name combined if spaces
     msgcontent = msg.content.trim().split(" ");
-    async if (msgcontent[1]) {
+    if (msgcontent[1]) {
       var i;
       for (i = 1; i <= msgcontent.length - 1; i++) {
         var song = song + `${msgcontent[i]} `;
       }
       console.log(song);
-        search(`${song}`, opts, function(err, results) {
+      search(`${song}`, opts, async function(err, results) {
         if (err) {
           return console.log(err);
           msg.channel.send(`sorry there was some error playing that song`);
         }
-        url = results[1].id;
-        yd.download(url);
-        voiceChannel.join().then(connection => {
-          msg.channel.send(`Now playing ${results[1].title}`);
-            const dispatcher = await connection.play(
-              `/home/notfamous/Music/bot/${results[1].title}.mp3`);
+        url = results[0].id;
+        await voiceChannel.join().then(async connection => {
+          embed = new Discord.MessageEmbed()
+                      .setTitle('NOW PLAYING')
+                      .setDescription(`${results[0].title}`)
+                      .setFooter(`command triggered by ${msg.author.tag}`,
+                                 msg.author.displayAvatarURL());
+          msg.channel.send(embed);
+          const dispatcher = connection.play(
+              ytdl(`${results[0].link}`, {filter : 'audioonly'}));
         });
       });
     } else {
@@ -275,14 +244,22 @@ client.on('message', msg => {
   }
 });
 
-/*client.on('message', msg => {
-    if (msg.content === '*dc') {
-        if (msg.member.voice.channel) {
-            msg.member.voice.channel.leave();
-        } else {
-            msg.reply("`you need to be in the same vc as the bot`");
-        }
+client.on('message', async msg => {
+  if (msg.content === '*disconnect' || msg.content === '*dc') {
+    if (msg.member.voice.channel) {
+      await msg.member.voice.channel.leave();
+    } else {
+      msg.reply("`you need to be in the same vc as the bot`");
     }
-});*/
+  }
+});
+
+client.on('message', async msg => {
+  if (msg.content === '*help') {
+    let embed = new Discord.MessageEmbed()
+          .setTitle('Help')
+    msg.channel.send(embed);
+  }
+});
 
 client.login(process.env.DISCORD_API_KEY);
