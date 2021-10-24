@@ -1,8 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const fetch = require("node-fetch");
-const ytSearch = require("youtube-search-without-api-key");
-const usetube = require("usetube");
+const fetch = require('node-fetch');
+const usetube = require('usetube');
 const ytdl = require("ytdl-core");
 require("ffmpeg-static");
 require("@discordjs/opus");
@@ -331,4 +330,4 @@ client.on("voiceStateUpdate", (oldState, newState) => {
   musicQueue = [];
 });
 
-client.login(process.env.DISCORD_API_KEY);
+client.login(process.env["DISCORD_API_KEY"]);
