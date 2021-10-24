@@ -223,7 +223,7 @@ client.on("message", async (msg) => {
     playMusic(currentConnection, musicQueue[1], msg);
   }
   if (msg.content === "*queue" || msg.content === "*q") {
-    embed = new Discord.MessageEmbed()
+	  embed = new Discord.MessageEmbed()
       .setTitle("MUSIC QUEUE")
       .setDescription(`SEX`)
       .setFooter(
@@ -233,12 +233,16 @@ client.on("message", async (msg) => {
     let i = 0;
     let j = 1;
     let embedDescription = "";
+	  if(!musicQueue.length){ embedDescription = "`Nothing in Queue`"
+	  }else{
+	  embed.addField("NOW PLAYING :",`[${musicQueue[0]}](${musicQueue[1]})`);
+	  }
     musicQueue.forEach((item) => {
       if (i % 2 === 0) {
-        embedDescription = embedDescription + `\`${j}: ` + `[${item}]`;
+        embedDescription = embedDescription + `${j}: ` + `[${item}]`;
         j++;
       } else {
-        embedDescription = embedDescription + `(${item})\`` + `\n`;
+        embedDescription = embedDescription + `(${item})` + `\n`;
       }
       i++;
     });
