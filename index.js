@@ -20,6 +20,8 @@ let musicQueue = [];
 
 function playMusic(connection, songUrl, msg) {
   dispatcher = connection.play(ytdl(songUrl, { filter: "audioonly" }));
+
+
   function dispatcherNext() {
     console.log("sidhiyo muji");
     musicQueue.shift();
@@ -33,8 +35,12 @@ function playMusic(connection, songUrl, msg) {
   dispatcher.on("finish", dispatcherNext);
 
 	console.log(musicQueue);
+	if(musicQueue.length){
 	embed = new Discord.MessageEmbed().setTitle("NOW PLAYING").setDescription(`[${musicQueue[0]}](${musicQueue[1]})`);
-	msg.channel.send(embed);
+		msg.channel.send(embed);
+	}else{
+		msg.channel.send(new Discord.MessageEmbed().setTitle("QUEUE ENDED!").setDescription("`Add songs to play.`"));
+	}
 
   console.log("inside");
 }
@@ -221,11 +227,8 @@ client.on("message", async (msg) => {
   if (msg.content === "*skip" || msg.content === "*s") {
     musicQueue.shift();
     musicQueue.shift();
-	  if(musicQueue.length){ playMusic(currentConnection, musicQueue[1], msg);
-	  }else{
-	  msg.channel.send(new Discord.MessageEmbed().setTitle("QUEUE ENDED!").setDescription("`Add songs to play.`"));
-		  
-  }}
+	playMusic(currentConnection, musicQueue[1], msg);
+  }
   if (msg.content === "*queue" || msg.content === "*q") {
 	  embed = new Discord.MessageEmbed()
       .setTitle("MUSIC QUEUE")
