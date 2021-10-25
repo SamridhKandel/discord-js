@@ -24,16 +24,17 @@ function playMusic(connection, songUrl, msg) {
     console.log("sidhiyo muji");
     musicQueue.shift();
     musicQueue.shift();
-    if (musicQueue.length) {
-      playMusic(connection, musicQueue[1], msg);
+    if (musicQueue.length>0) {
+	    playMusic(connection, musicQueue[1], msg);
     }
+
     dispatcher = undefined;
   }
   dispatcher.on("finish", dispatcherNext);
-  embed = new Discord.MessageEmbed()
-    .setTitle("NOW PLAYING")
-    .setDescription(`[${musicQueue[0]}](${musicQueue[1]})`);
-  msg.channel.send(embed);
+
+	console.log(musicQueue);
+	embed = new Discord.MessageEmbed().setTitle("NOW PLAYING").setDescription(`[${musicQueue[0]}](${musicQueue[1]})`);
+	msg.channel.send(embed);
 
   console.log("inside");
 }
@@ -220,8 +221,11 @@ client.on("message", async (msg) => {
   if (msg.content === "*skip" || msg.content === "*s") {
     musicQueue.shift();
     musicQueue.shift();
-    playMusic(currentConnection, musicQueue[1], msg);
-  }
+	  if(musicQueue.length){ playMusic(currentConnection, musicQueue[1], msg);
+	  }else{
+	  msg.channel.send(new Discord.MessageEmbed().setTitle("QUEUE ENDED!").setDescription("`Add songs to play.`"));
+		  
+  }}
   if (msg.content === "*queue" || msg.content === "*q") {
 	  embed = new Discord.MessageEmbed()
       .setTitle("MUSIC QUEUE")
